@@ -1,0 +1,334 @@
+/*Global Mandatary */
+.no-padding{padding:0;}
+.inline {display:inline}
+.w100percent {width:100%;}
+.w100px{width:100px;}
+.w200px{width:200px;}
+.w300px{width:300px;}
+.mt10px{margin-top:10px;}
+.mt20px{margin-top:20px;}
+.mt30px{margin-top:30px;}
+.mb20px{margin-bottom:20px;}
+.size20px{font-size:20px;}
+.size18px{font-size:18px;}
+.center{margin-right: auto;margin-left: auto;}
+.fg-red{color:#ff2222;}
+@media(max-width:360px) {
+  .no-hp-u320 {
+	padding-left:0;
+	padding-right:0;
+  }
+}
+.text-red{color:#fa2233;}
+
+/*Buttons*/
+.red.btn {
+	background:#ea609e;
+	color: #fff;
+}
+.red.btn:hover { background: #fa609e; }
+.blue.btn {
+	background:#2b71b8;
+	color: #fff;
+}
+.blue.btn:hover { background: #2b71c8; }
+.green.btn {
+	background:#71c15b;
+	color: #fff;
+}
+.green.btn:hover { background: #71d15b; }
+
+.btn {
+  display: inline-block !important;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  cursor:pointer;
+  margin-bottom: 10px;
+}
+/*
+.image-btn.start,
+.image-btn.ranking-enabled {
+  width: 300px;
+  height: 100px;
+}
+.image-btn.start:active,
+.image-btn.ranking-enabled:active  {
+    background-position: 0 -100px;
+}
+.image-btn.start {
+  background: url(../images/buttons/btn_start.png) no-repeat;
+}
+.image-btn.ranking-enabled {
+  background: url(../images/buttons/btn_ranking_enabled.png) no-repeat;
+}*/
+/*@media(max-width:650px) {*/
+  .image-btn.start,
+  .image-btn.ranking-enabled {
+	width:150px;
+	height:50px;
+  }
+  .image-btn.start:active,
+  .image-btn.ranking-enabled:active {
+	background-position: 0 -50px;
+  }
+/*}*/
+
+.image-btn.mail,
+.image-btn.femail,
+.image-btn.middle,
+.image-btn.camera,
+.image-btn.album {
+  width: 300px;
+  height: 120px;
+}
+.image-btn.mail:active,
+.image-btn.femail:active,
+.image-btn.middle:active,
+.image-btn.camera:active,
+.image-btn.album:active {
+    background-position: 0 -120px;
+}
+
+/*Top Advertisement Board*/
+.top-bar {
+	height: 50px;
+	padding: 15px 15px 0 15px;
+	margin-left: -15px;
+	margin-right: -15px;
+	font-weight:bold;
+	font-size: 12pt;
+}
+.top-bar.red {
+	background:#ff0077;
+	color: #333;
+}
+.top-bar.black {
+	background: #333;
+	color: #fff;
+}
+.top-bar.green {
+	background: #60bc04;
+	font-size: 20pt;
+	padding-top:5px;
+	color:#fff;
+}
+
+/*Custom Styles*/
+a:hover { text-decoration: none; }
+a.white { color:#fff; }
+a.white:hover, a.white:active { color:#efefef; }
+#changeable {
+	overflow:hidden;
+}
+
+.img-responsive.logo {
+	margin:0 auto;
+}
+/*Face Detection Page Style*/
+.face-detection-text{
+	font-size:16pt;
+	font-weight:bold;
+	background:#72e005;
+}
+#scope {
+	width:50px;
+    height:50px;
+}
+#server-connecting #photo {
+	width:150px;
+	height:166px;
+}
+.progress {
+	background:#777;
+	border-radius:7px;
+	border:1px solid #ccc; 
+	color:#fff; 
+	margin-top:100px;
+	width:250px;
+	height:50px;
+	margin-right:auto;
+	margin-left:auto;
+	padding: 15px 40px;
+}
+/*Result Page Style*/
+.result-box {
+	border-bottom: 3px solid #32b246;
+	margin:15px;
+	padding:5px;
+	font-size: 20pt;
+	font-weight:bold;
+	text-align:center;
+}
+/*Ranking Page Style*/
+.ranking-menu {
+	height: 50px;
+	border-bottom: 3px solid #42a59f;
+	background-color:#35b597;
+}
+
+.ranking > li {
+	width: 25%;
+	text-align:center;
+	font-weight:bold;
+	border-left: 1px solid #ccc;
+}
+@media(max-width:320px)
+{
+  .ranking > li {
+	font-size:8pt;
+  }
+}
+
+.ranking > li > a,
+.ranking > li > a:hover,
+.ranking > li.active > a,
+.ranking > li.active > a:focus,
+.ranking > li.active > a:hover {
+	border-width:0;
+}
+.ranking > li.active {
+	border-bottom: 3px solid #42a59f;
+}
+
+.tab-content .title {
+	padding:5px 20px;
+	color:#35b595;
+	font-size:12pt;
+	font-weight:bold;
+	height:45px;
+}
+.tab-content .title > span{
+	padding-top:15px;
+}
+.tab-content .item-list {
+	overflow: auto;
+	margin: 0 20px 10px 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+}
+.tab-content .item-list table {
+	margin:0;
+}
+.tab-content .item-list td {
+	text-align:center;
+	vertical-align: middle;
+	cursor:pointer;
+}
+.tab-content .item-list .number {
+	width:15%;
+	font-size:24pt;
+	color:#35b595;
+}
+.tab-content .item-list .picture {
+	width:20%;
+}
+.tab-content .item-list .picture > img{
+	height:90px;
+	width:auto;
+}
+.tab-content .item-list .text {
+	width:50%;
+	text-align:left;
+	padding-left: 50px;
+}
+.tab-content .item-list .text > .percent {
+	color: #35b595;
+	font-weight: bold;
+	font-size:16pt;
+}
+.tab-content .item-list .button {
+	width:15%;
+}
+.tab-content .item-list .button > .btn {
+	background:#35b595;
+	border-radius:15px;
+	border:1px solid #35b595;
+	outline:none;
+}
+
+/*Ranking Register Style*/
+.buttons div {
+	padding:10px;
+}
+.content {
+	background:#ccc;
+	padding:5px;
+}
+.content > .result {
+	border:1px solid #ccc;
+	background:#fff;
+	border-radius:5px;
+	padding:20px;
+}
+.content > .result .percent {
+	font-size: 24pt;
+	font-weight:bold;
+	color:#35b595;
+}
+
+.modal-dialog {
+	margin-top:300px;
+	max-width:320px;
+}
+
+@media(max-height:640px) {
+  .modal-dialog {
+	margin-top:150px;
+  }
+}
+
+/*Animation Page*/
+@keyframes rotate {
+	0% {
+		transform: rotate(-720deg);
+		-moz-transform: rotate(-720deg);
+		-webkit-transform: rotate(-720deg);
+		-o-transform: rotate(-720deg);
+		width:30%;
+		margin-left:40%;
+		margin-top:60%;
+	}
+	100% {
+		transfrom: rotate(720deg);
+		-moz-transform: rotate(720deg);
+		-webkit-transform: rotate(720deg);
+		-o-transform: rotate(720deg);
+		width:100%;
+		margin-left:0%;
+	}
+}
+#anim {
+	margin-top:20%;
+	width:100%;
+/*	animation-name:rotate;
+	animation-duration: 3.3s;
+	animation-timing-function: ease;
+	-moz-animation-name:rotate;
+	-moz-animation-duration: 3.3s;
+	-moz-animation-timing-function: ease;
+	-webkit-animation-name:rotate;
+	-webkit-animation-duration: 3.3s;
+	-webkit-animation-timing-function: ease;
+	-o-animation-name:rotate;
+	-o-animation-duration: 3.3s;
+	-o-animation-timing-function: ease;
+*/
+}
+
+/*Log in Styles*/
+form label {
+	padding:6px;
+	background:#ea9430;
+	color:#fff;
+	position:relative;
+}
+
+.label.round {
+  border-radius:50%;
+  padding:10px;
+}

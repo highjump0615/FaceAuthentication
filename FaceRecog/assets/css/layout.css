@@ -1,0 +1,16 @@
+html,
+body {
+    height: 100%;
+	background:#555;
+}
+
+.wrap {
+    min-height: 100%;
+    margin: 0 auto 0px;
+    padding: 0 0 0px;
+}
+.wrap > .container {
+	background-color:#fff;
+	max-width: 500px;
+	position:relative;
+}
