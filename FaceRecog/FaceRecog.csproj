@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -81,6 +82,7 @@
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="assets\js\MediaStreamRecorder.js" />
+    <Content Include="assets\js\webcam.js" />
     <Content Include="assets\plugins\bootbox\LICENSE.md" />
     <Content Include="assets\plugins\bootbox\README.md" />
     <Content Include="assets\plugins\bootstrap-modal\LICENSE" />
@@ -122,6 +124,7 @@
     <Content Include="Login.aspx" />
     <Content Include="MainSite.aspx" />
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

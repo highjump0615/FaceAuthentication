@@ -53,7 +53,7 @@
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-envelope"></span>
 							</span>
-							<input type="text" id="email" class="form-control" placeholder="Email Address" />
+							<input type="text" id="useremail" class="form-control" placeholder="Email Address" />
 						</div>
 					</div>
 				</div>
@@ -282,6 +282,7 @@
             httpRequest.open("POST", "api/signup");
             var fd = new FormData();
             fd.append("UserName", $("#username").val());
+            fd.append("UserEmail", $("#useremail").val());
             fd.append("UserAddress", $("#useraddress").val());
             fd.append("MainPhoto", userMainPhoto.src);
             fd.append("SubsidiaryPhoto1", userSubPhotos[0]);
@@ -326,7 +327,7 @@
         }
 
         function takeSignupInfo() {
-            if ($("#username").val() == '' || $("#useraddress").val() == '')
+            if ($("#username").val() == '' || $("#useremail").val() == '' || $("#useraddress").val() == '')
             {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease make sure that you've filled out required forms for enrollment.";
@@ -403,10 +404,14 @@
                 };
                 document.getElementById("notify_permission").style = "color:white";
                 document.getElementById("notify_permission").innerHTML = "Recording a video now ...";
-                setTimeout(function () { mediaRecorder.start(2000); }, (Object)(1000));
-                setTimeout(function () { mediaRecorder.stop(); }, (Object)(3000));
+                setTimeout(function () {
+                    mediaRecorder.start(2000);
+                }, 1000);
+                setTimeout(function () {
+                    mediaRecorder.stop();
+                }, 3000);
 
-                //
+                ////
                 takePhotoArray();
             });
             Webcam.attach('#my_camera');

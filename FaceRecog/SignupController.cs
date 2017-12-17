@@ -205,6 +205,7 @@ namespace FaceRecog
             //signing up
             String userName = HttpContext.Current.Request.Params["UserName"];
             String userAddress = HttpContext.Current.Request.Params["UserAddress"];
+            String userEmail = HttpContext.Current.Request.Params["UserEmail"];
             String strFeatureData = string.Join(",", pFeature);
 
             byte[] bufferUserBlob = null;
@@ -240,11 +241,12 @@ namespace FaceRecog
                 }
             }
 
-            string strQuery = "INSERT INTO UserData (UserName, UserAddress, UserPhoto, UserVideo, FeatureData) ";
-            strQuery += "VALUES (@UserName, @UserAddress, @UserPhoto, @UserVideo, @FeatureData)";
+            string strQuery = "INSERT INTO UserData (UserName, UserAddress, UserEmail, UserPhoto, UserVideo, FeatureData) ";
+            strQuery += "VALUES (@UserName, @UserAddress, @UserEmail, @UserPhoto, @UserVideo, @FeatureData)";
             SqlCommand cmd = new SqlCommand(strQuery);
             cmd.Parameters.Add("@UserName", SqlDbType.NChar).Value = userName;
             cmd.Parameters.Add("@UserAddress", SqlDbType.NChar).Value = userAddress;
+            cmd.Parameters.Add("@UserEmail", SqlDbType.NVarChar).Value = userEmail;
             cmd.Parameters.Add("@UserPhoto", SqlDbType.Image).Value = bmpMainPhoto.GetBuffer();
             cmd.Parameters.Add("@UserVideo", SqlDbType.Image).Value = bufferUserBlob;
             cmd.Parameters.Add("@FeatureData", SqlDbType.Text).Value = strFeatureData;
