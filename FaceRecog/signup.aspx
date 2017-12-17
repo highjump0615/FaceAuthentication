@@ -38,9 +38,22 @@
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-envelope"></span>
+								<span class="glyphicon glyphicon-user"></span>
 							</span>
 							<input type="text" id="username" class="form-control" placeholder="username" />
+						</div>
+					</div>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Email : </label>
+				<div class="col-sm-7" style="margin-bottom:5px;">
+					<div class="input-inline input-medium">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-envelope"></span>
+							</span>
+							<input type="text" id="email" class="form-control" placeholder="Email Address" />
 						</div>
 					</div>
 				</div>
@@ -51,7 +64,7 @@
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-envelope"></span>
+								<span class="glyphicon glyphicon-plane"></span>
 							</span>
 							<input type="text" id="useraddress" class="form-control" placeholder="useraddress" />
 						</div>
