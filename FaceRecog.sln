@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaceRecog", "FaceRecog\FaceRecog.csproj", "{440D4443-30D0-46C8-AD60-F5D47B9BE6D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopifyMultipassTokenGenerator", "ShopifyMultipassTokenGenerator\ShopifyMultipassTokenGenerator.csproj", "{D4952AAF-C8C1-4450-BA78-390E9EA36708}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{440D4443-30D0-46C8-AD60-F5D47B9BE6D5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{440D4443-30D0-46C8-AD60-F5D47B9BE6D5}.Release|x86.ActiveCfg = Release|x86
 		{440D4443-30D0-46C8-AD60-F5D47B9BE6D5}.Release|x86.Build.0 = Release|x86
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Debug|x86.Build.0 = Debug|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4952AAF-C8C1-4450-BA78-390E9EA36708}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

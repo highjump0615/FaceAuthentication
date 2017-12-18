@@ -124,6 +124,7 @@
     <Content Include="Login.aspx" />
     <Content Include="MainSite.aspx" />
     <Content Include="packages.config" />
+    <Content Include="Config\app.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -216,6 +217,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShopifyMultipassTokenGenerator\ShopifyMultipassTokenGenerator.csproj">
+      <Project>{D4952AAF-C8C1-4450-BA78-390E9EA36708}</Project>
+      <Name>ShopifyMultipassTokenGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

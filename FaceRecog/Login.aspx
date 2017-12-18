@@ -66,6 +66,11 @@
 </body>
 </html>
 <script>
+
+    // get parameters from url
+    var gstrReturn = '<%= Request.QueryString["returnUrl"] %>';
+    var gstrFrom = '<%= Request.QueryString["from"] %>';
+
     document.getElementById("btn-login").disabled = true;
     document.getElementById("notify_permission").style = "color:white";
     document.getElementById("notify_permission").innerHTML = "Please share your camera device!";
@@ -190,6 +195,7 @@
         }
 
         function takeSnapshot() {
+            
             if ($("#username").val() == '') {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease enter your name.";
@@ -241,11 +247,16 @@
             document.getElementById("notify_permission").innerHTML = "We're verifying you now. Please wait for a while...";
             userPhoto.src = canvas.toDataURL('image/png');
             video.pause();
-
+            
             $.ajax({
                 url: 'api/login',
                 type: 'POST',
-                data: { UserPhoto: userPhoto.src, UserName: $("#username").val() },
+                data: {
+                    UserPhoto: userPhoto.src,
+                    UserName: $("#username").val(),
+                    ReturnUrl: gstrReturn,
+                    From: gstrFrom
+                },
                 dataType: 'json',
                 async: false,
                 success: handleResponse,
