@@ -18,7 +18,7 @@
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/layout.css" rel="stylesheet" />
+    <link href="assets/css/layout.css?171219" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -29,7 +29,7 @@
 <body>
     <div class="wrap">
 		<div class="container" style="background:#555;padding:0;">
-			<div class="row" id="changeable">
+			<div class="row mb-15" id="changeable">
     			<video id="webcam" style="width:100%; height:80%;" autoplay="autoplay"></video>
             </div>
 			<div class="form-group">
@@ -49,7 +49,11 @@
                 <h4 id="notify_permission"></h4>
             </div>
             <div style="text-align:center;">
-                <input id="btn-login" class="btn red" style="width: 150px; height:40px;font-size:20px;" value="Login" />
+                <button id="btn-login" class="btn red mt-15" style="width: 150px; height:40px;font-size:20px;">Login</button>
+            </div>
+
+            <div class="text-center mt-15 notice-link"
+              >Not having an account?<a href="signup.aspx<%= Request.Url.Query %>">&nbsp;&nbsp;Sign up</a> here
             </div>
 		</div>
 	</div>
