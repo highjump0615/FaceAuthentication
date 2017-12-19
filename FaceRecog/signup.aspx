@@ -262,6 +262,7 @@
 
         function sendUserData(blob) {
             var httpRequest = new XMLHttpRequest();
+
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.readyState === 4) {
                     var response = JSON.parse(httpRequest.responseText);
@@ -279,6 +280,7 @@
                     }
                 }
             };
+
             httpRequest.open("POST", "api/signup");
             var fd = new FormData();
             fd.append("UserName", $("#username").val());

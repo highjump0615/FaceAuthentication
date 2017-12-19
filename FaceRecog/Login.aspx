@@ -38,7 +38,7 @@
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-envelope"></span>
+								<span class="glyphicon glyphicon-user"></span>
 							</span>
 							<input type="text" id="username" class="form-control" placeholder="username" />
 						</div>
@@ -180,14 +180,14 @@
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
                 alert('Login failed!\n' + data.message);
-                window.location.replace("default.aspx");
             }
             else {
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
-                alert('Welcome to visiting our site again!\n Hope you will enjoy your journey.');
-                window.location.replace("MainSite.aspx");
+                alert('Welcome to visiting our site again!\n Hope you will enjoy your journey.');                
             }
+
+            window.location.replace(data.redirectUrl);
         }
 
         function handleError(jqXHR, status, error) {
