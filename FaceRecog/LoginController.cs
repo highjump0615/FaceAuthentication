@@ -125,7 +125,7 @@ namespace FaceRecog
                 Int32 count = Convert.ToInt32(sqlCmd.ExecuteScalar());
                 if(count == 0)
                 {
-                    return makeRedirectResponse(new ResponseMessage(false, "There's no user having this username!"), strReturnUrl, strFrom);
+                    return makeRedirectResponse(new ResponseMessage(false, "There's no user having this name!"), strReturnUrl, strFrom);
                 }
             }
             catch (Exception)

@@ -32,15 +32,17 @@
 			<div class="row" id="changeable">
     			<video id="webcamShow" style="width:100%; height:80%;" autoplay></video>
             </div>
+
+            <!-- First Name -->
 			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Name : </label>
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">First Name : </label>
 				<div class="col-sm-7" style="margin-bottom:5px;">
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-user"></span>
 							</span>
-							<input type="text" id="username" class="form-control" placeholder="username" />
+							<input type="text" id="firstname" class="form-control" placeholder="First Name" />
 						</div>
 					</div>
 				</div>
@@ -54,19 +56,6 @@
 								<span class="glyphicon glyphicon-envelope"></span>
 							</span>
 							<input type="text" id="useremail" class="form-control" placeholder="Email Address" />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Address : </label>
-				<div class="col-sm-7" style="margin-bottom:10px;">
-					<div class="input-inline input-medium">
-						<div class="input-group">
-							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-plane"></span>
-							</span>
-							<input type="text" id="useraddress" class="form-control" placeholder="useraddress" />
 						</div>
 					</div>
 				</div>
@@ -290,9 +279,8 @@
 
             httpRequest.open("POST", "api/signup");
             var fd = new FormData();
-            fd.append("UserName", $("#username").val());
+            fd.append("FirstName", $("#firstname").val());
             fd.append("UserEmail", $("#useremail").val());
-            fd.append("UserAddress", $("#useraddress").val());
             fd.append("MainPhoto", userMainPhoto.src);
             fd.append("SubsidiaryPhoto1", userSubPhotos[0]);
             fd.append("SubsidiaryPhoto2", userSubPhotos[1]);
@@ -341,7 +329,7 @@
         }
 
         function takeSignupInfo() {
-            if ($("#username").val() == '' || $("#useremail").val() == '' || $("#useraddress").val() == '')
+            if ($("#firstname").val() == '' || $("#useremail").val() == '')
             {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease make sure that you've filled out required forms for enrollment.";
@@ -429,9 +417,9 @@
                 setTimeout(function () {
                     mediaRecorder.start(2000);
                 }, 1000);
-                //setTimeout(function () {
-                //    mediaRecorder.stop();
-                //}, 3000);
+                setTimeout(function () {
+                    mediaRecorder.stop();
+                }, 3000);
 
                 ////
                 takePhotoArray();

@@ -33,14 +33,14 @@
     			<video id="webcam" style="width:100%; height:80%;" autoplay="autoplay"></video>
             </div>
 			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Name : </label>
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">First Name : </label>
 				<div class="col-sm-7" style="margin-bottom:5px;">
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-user"></span>
 							</span>
-							<input type="text" id="username" class="form-control" placeholder="username" />
+							<input type="text" id="firstname" class="form-control" placeholder="First Name" />
 						</div>
 					</div>
 				</div>
@@ -180,18 +180,22 @@
         }
 
         function handleResponse(data) {
+            // Fail
             if (!data.success) {
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
                 alert('Login failed!\n' + data.message);
+
+                // Resumes camera
+                video.play();
             }
+            // Success
             else {
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
                 alert('Welcome to visiting our site again!\n Hope you will enjoy your journey.');                
-            }
-
-            window.location.replace(data.redirectUrl);
+                window.location.replace(data.redirectUrl);
+            }            
         }
 
         function handleError(jqXHR, status, error) {
@@ -200,7 +204,7 @@
 
         function takeSnapshot() {
             
-            if ($("#username").val() == '') {
+            if ($("#firstname").val() == '') {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease enter your name.";
                 return;
@@ -257,7 +261,7 @@
                 type: 'POST',
                 data: {
                     UserPhoto: userPhoto.src,
-                    UserName: $("#username").val(),
+                    UserName: $("#firstname").val(),
                     ReturnUrl: gstrReturn,
                     From: gstrFrom
                 },
