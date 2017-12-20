@@ -13,10 +13,11 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Specialized;
+using FaceRecog.Controller;
 
 namespace FaceRecog
 {
-    public class SignupController : ApiController
+    public class SignupController : BaseController
     {
         public static string RemoveEXIFRotation(string URI)
         {
@@ -102,6 +103,10 @@ namespace FaceRecog
 
             //photo processing
             String userMainPhoto = HttpContext.Current.Request.Params["MainPhoto"];
+
+            string strReturnUrl = HttpContext.Current.Request.Params["ReturnUrl"];
+            string strFrom = HttpContext.Current.Request.Params["From"];
+
             userMainPhoto = RemoveEXIFRotation(userMainPhoto);
             userMainPhoto = userMainPhoto.Replace("data:image/jpg;base64,", "");
 
@@ -114,7 +119,7 @@ namespace FaceRecog
             BitmapEx bmpMainPhoto = new BitmapEx(memStream);
             if (bmpMainPhoto.GetWidth() == 0)
             {
-                return new ResponseMessage(false, "Invalid Photo Error!");
+                return makeRedirectResponse(new ResponseMessage(false, "Invalid Photo Error!"), strReturnUrl, strFrom);
             }
 
             // detect face
@@ -122,12 +127,12 @@ namespace FaceRecog
             if (nFaceCount <= 0)
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Face Detection Error! Could not find any face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Face Detection Error! Could not find any face."), strReturnUrl, strFrom);
             }
             else if (nFaceCount > 1) 
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face."), strReturnUrl, strFrom);
             }
 
             //get face region
@@ -190,7 +195,7 @@ namespace FaceRecog
             }
             catch (Exception)
             {
-                return new ResponseMessage(false, "DB error occured while comparing with enrolled faces!");
+                return makeRedirectResponse(new ResponseMessage(false, "DB error occured while comparing with enrolled faces!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -199,7 +204,7 @@ namespace FaceRecog
 
             if(bFaceExisting)
             {
-                return new ResponseMessage(false, "There's already the same face existing!");
+                return makeRedirectResponse(new ResponseMessage(false, "There's already the same face existing!"), strReturnUrl, strFrom);
             }
 
             //signing up
@@ -261,7 +266,7 @@ namespace FaceRecog
             }
             catch (Exception ex)
             {
-                return new ResponseMessage(false, "DB error occured while creating an instance!");
+                return makeRedirectResponse(new ResponseMessage(false, "DB error occured while creating an instance!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -269,7 +274,8 @@ namespace FaceRecog
                 sqlDbConnection.Dispose();
             }
 
-            return new ResponseMessage(true, "OK");
+            // Succeeded
+            return makeShopifyLoginResponse(userEmail, strReturnUrl, strFrom);
         }
     }
 }

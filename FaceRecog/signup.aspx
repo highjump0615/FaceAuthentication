@@ -75,7 +75,7 @@
                 <h4 id="notify_permission"></h4>
             </div>
             <div style="text-align:center;">
-                <input id="btn-signup" class="btn green" style="width: 150px; height:40px;font-size:20px;" value="SignUp" />
+                <button id="btn-signup" class="btn green" style="width: 150px; height:40px;font-size:20px;">SignUp</button>
             </div>
             <div id="my_camera" style="visibility: hidden; position:absolute; bottom:0; right:0"></div>
 		</div>
@@ -96,6 +96,11 @@
 </body>
 </html>
 <script>
+
+  // get parameters from url
+  var gstrReturn = '<%= Request.QueryString["returnUrl"] %>';
+  var gstrFrom = '<%= Request.QueryString["from"] %>';
+
     document.getElementById("btn-signup").disabled = true;
     document.getElementById("notify_permission").style = "color:white";
     document.getElementById("notify_permission").innerHTML = "Please share your camera device!";
@@ -276,7 +281,9 @@
                         document.getElementById("btn-signup").disabled = false;
                         document.getElementById("notify_permission").innerHTML = "";
                         alert('Congratulations for signing up to our community!\n');
-                        window.location.replace("default.aspx");
+
+                        // Go to main page or shopify
+                        window.location.replace(response.redirectUrl);
                     }
                 }
             };
@@ -292,6 +299,11 @@
             fd.append("SubsidiaryPhoto3", userSubPhotos[2]);
             fd.append("SubsidiaryPhoto4", userSubPhotos[3]);
             fd.append("UserVideo", blob);
+
+            // shopify related param
+            fd.append("ReturnUrl", gstrReturn);
+            fd.append("From", gstrFrom);
+
             httpRequest.send(fd);
         }
 
@@ -382,6 +394,8 @@
 
             document.getElementById("notify_permission").style = "color:white";
             document.getElementById("notify_permission").innerHTML = "Please confirm if you're okay with creating instances of your camera device to take a video!";
+
+            var bUploaded = false;
  
             //turn on photo capture
             Webcam.set({
@@ -395,6 +409,10 @@
                 mediaRecorder = new MediaStreamRecorder(localstream);
                 mediaRecorder.mimeType = 'video/webm';
                 mediaRecorder.ondataavailable = function (blob) {
+                  if (bUploaded) {
+                    return;
+                  }
+
                     //turn off photo capture
                     Webcam.off('load', function () { });
                     Webcam.reset();
@@ -403,15 +421,17 @@
                     sendUserData(blob);
                     document.getElementById("notify_permission").style = "color:white";
                     document.getElementById("notify_permission").innerHTML = "Checking user's photo...";
+
+                    bUploaded = true;
                 };
                 document.getElementById("notify_permission").style = "color:white";
                 document.getElementById("notify_permission").innerHTML = "Recording a video now ...";
                 setTimeout(function () {
                     mediaRecorder.start(2000);
                 }, 1000);
-                setTimeout(function () {
-                    mediaRecorder.stop();
-                }, 3000);
+                //setTimeout(function () {
+                //    mediaRecorder.stop();
+                //}, 3000);
 
                 ////
                 takePhotoArray();

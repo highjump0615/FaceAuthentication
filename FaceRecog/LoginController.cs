@@ -17,10 +17,11 @@ using ShopifyMultipassTokenGenerator.Models;
 using System.Configuration;
 using Newtonsoft.Json;
 using ShopifyMultipassTokenGenerator;
+using FaceRecog.Controller;
 
 namespace FaceRecog
 {
-    public class LoginController : ApiController
+    public class LoginController : BaseController
     {
         public static string RemoveEXIFRotation(string URI)
         {
@@ -94,25 +95,6 @@ namespace FaceRecog
             }
         }
 
-        /// <summary>
-        /// Make Login response for failure
-        /// </summary>
-        /// <param name="response"></param>
-        /// <param name="returnUri"></param>
-        /// <param name="from"></param>
-        /// <returns></returns>
-        private ResponseMessage setLoginResponse(ResponseMessage response, string returnUri, string from)
-        {
-            response.redirectUrl = "default.aspx";
-
-            if ("myshopify".Equals(from))
-            {
-                response.redirectUrl = "https://" + returnUri;
-            }
-
-            return response;
-        }
-
         [HttpPost]
         public ResponseMessage Post()
         {
@@ -143,12 +125,12 @@ namespace FaceRecog
                 Int32 count = Convert.ToInt32(sqlCmd.ExecuteScalar());
                 if(count == 0)
                 {
-                    return setLoginResponse(new ResponseMessage(false, "There's no user having this username!"), strReturnUrl, strFrom);
+                    return makeRedirectResponse(new ResponseMessage(false, "There's no user having this username!"), strReturnUrl, strFrom);
                 }
             }
             catch (Exception)
             {
-                return setLoginResponse(new ResponseMessage(false, "DB error occured while verification is being held!"), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "DB error occured while verification is being held!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -170,7 +152,7 @@ namespace FaceRecog
 
             if (bmp.GetWidth() == 0)
             {
-                return setLoginResponse(new ResponseMessage(false, "Invalid Photo Error!"), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "Invalid Photo Error!"), strReturnUrl, strFrom);
             }
 
             // detect face
@@ -178,12 +160,12 @@ namespace FaceRecog
             if (nFaceCount <= 0)
             {
                 FaceEngine.RemoveAllTemplate();
-                return setLoginResponse(new ResponseMessage(false, "Face Detection Error! Could not find any face."), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "Face Detection Error! Could not find any face."), strReturnUrl, strFrom);
             }
             else if (nFaceCount > 1)
             {
                 FaceEngine.RemoveAllTemplate();
-                return setLoginResponse(new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face."), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face."), strReturnUrl, strFrom);
             }
 
             //get face region
@@ -241,7 +223,7 @@ namespace FaceRecog
             }
             catch (Exception)
             {
-                return setLoginResponse(new ResponseMessage(false, "Error occured while verification is being held!"), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "Error occured while verification is being held!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -250,30 +232,11 @@ namespace FaceRecog
 
             if (!bFaceVerified)
             {
-                return setLoginResponse(new ResponseMessage(false, "Sorry, your face doesn't match with enrolled one!"), strReturnUrl, strFrom);
+                return makeRedirectResponse(new ResponseMessage(false, "Sorry, your face doesn't match with enrolled one!"), strReturnUrl, strFrom);
             }
 
             // Succeeded
-            var response = new ResponseMessage(true, "OK");
-            response.redirectUrl = "MainSite.aspx";
-
-            if ("myshopify".Equals(strFrom) && !String.IsNullOrEmpty(strUserEmail))
-            {
-                var input = new Customer()
-                {
-                    Email = strUserEmail
-                };
-
-                var secret = ConfigurationManager.AppSettings["shopifyMultipassSecret"];
-                var customerJSONString = JsonConvert.SerializeObject(input);
-
-                ShopifyMultipass shopifyMultipass = new ShopifyMultipass(secret, strReturnUrl);
-
-                // Generate url for shopify login 
-                response.redirectUrl = shopifyMultipass.Process(customerJSONString);
-            }
-
-            return response;
+            return makeShopifyLoginResponse(strUserEmail, strReturnUrl, strFrom);
         }
     }
 }
