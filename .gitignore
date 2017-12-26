@@ -287,4 +287,7 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+# sensitive info should be protected
+FaceRecog/Config/app.config
+
 
