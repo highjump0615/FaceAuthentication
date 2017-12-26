@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,8 +41,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -80,7 +81,15 @@
     <Content Include="assets\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="assets\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="assets\js\facedetect\compatibility.js" />
+    <Content Include="assets\js\facedetect\dat.gui.min.js" />
+    <Content Include="assets\js\facedetect\frontalface.js" />
+    <Content Include="assets\js\facedetect\global.js" />
+    <Content Include="assets\js\facedetect\jquery.js" />
+    <Content Include="assets\js\facedetect\jsfeat-min.js" />
+    <Content Include="assets\js\facedetect\profiler.js" />
     <Content Include="assets\js\MediaStreamRecorder.js" />
+    <Content Include="assets\js\webcam.js" />
     <Content Include="assets\plugins\bootbox\LICENSE.md" />
     <Content Include="assets\plugins\bootbox\README.md" />
     <Content Include="assets\plugins\bootstrap-modal\LICENSE" />
@@ -122,6 +131,8 @@
     <Content Include="Login.aspx" />
     <Content Include="MainSite.aspx" />
     <Content Include="packages.config" />
+    <Content Include="Config\app.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -173,6 +184,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="BitmapEx.cs" />
+    <Compile Include="Controller\BaseController.cs" />
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -213,6 +225,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShopifyMultipassTokenGenerator\ShopifyMultipassTokenGenerator.csproj">
+      <Project>{D4952AAF-C8C1-4450-BA78-390E9EA36708}</Project>
+      <Name>ShopifyMultipassTokenGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

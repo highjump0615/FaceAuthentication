@@ -13,10 +13,11 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Specialized;
+using FaceRecog.Controller;
 
 namespace FaceRecog
 {
-    public class SignupController : ApiController
+    public class SignupController : BaseController
     {
         public static string RemoveEXIFRotation(string URI)
         {
@@ -102,6 +103,10 @@ namespace FaceRecog
 
             //photo processing
             String userMainPhoto = HttpContext.Current.Request.Params["MainPhoto"];
+
+            string strReturnUrl = HttpContext.Current.Request.Params["ReturnUrl"];
+            string strFrom = HttpContext.Current.Request.Params["From"];
+
             userMainPhoto = RemoveEXIFRotation(userMainPhoto);
             userMainPhoto = userMainPhoto.Replace("data:image/jpg;base64,", "");
 
@@ -110,11 +115,11 @@ namespace FaceRecog
             memStream.Write(bufferMainPhoto, 0, bufferMainPhoto.Length);
             memStream.Flush();
             memStream.Seek(0, SeekOrigin.Begin);
-            
+
             BitmapEx bmpMainPhoto = new BitmapEx(memStream);
             if (bmpMainPhoto.GetWidth() == 0)
             {
-                return new ResponseMessage(false, "Invalid Photo Error!");
+                return makeRedirectResponse(new ResponseMessage(false, "Invalid Photo Error!"), strReturnUrl, strFrom);
             }
 
             // detect face
@@ -122,18 +127,18 @@ namespace FaceRecog
             if (nFaceCount <= 0)
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Face Detection Error! Could not find any face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Face Detection Error! Could not find any face."), strReturnUrl, strFrom);
             }
-            else if (nFaceCount > 1) 
+            else if (nFaceCount > 1)
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face."), strReturnUrl, strFrom);
             }
 
             //get face region
             FaceRectInfo faceRect = new FaceRectInfo();
             FaceEngine.GetDetectFaces(0, ref faceRect);
-            
+
             //detect landmarks
             SFaceLandmark landmarkPoints = new SFaceLandmark();
             FaceEngine.GetDetectPoints(0, ref landmarkPoints);
@@ -149,13 +154,13 @@ namespace FaceRecog
 
             string sql = "SELECT FeatureData FROM UserData";
             SqlConnection dbConn = new SqlConnection(GlobalVar.sqlDatabaseAccessString);
-            SqlCommand dbComm = new SqlCommand(sql, dbConn);        
+            SqlCommand dbComm = new SqlCommand(sql, dbConn);
             try
             {
                 dbConn.Open();
                 SqlDataReader dbRead = dbComm.ExecuteReader();
-                
-                while(dbRead.Read())
+
+                while (dbRead.Read())
                 {
                     string strJointEnrolledFeatureData = dbRead.GetString(0);
                     string[] strEnrolledFeatureDatas = strJointEnrolledFeatureData.Split('|');
@@ -188,29 +193,29 @@ namespace FaceRecog
                 }
                 dbRead.Close();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return new ResponseMessage(false, "DB error occured while comparing with enrolled faces!");
+                return makeRedirectResponse(new ResponseMessage(false, "DB error occured while comparing with enrolled faces!"), strReturnUrl, strFrom);
             }
             finally
             {
                 dbConn.Close();
             }
 
-            if(bFaceExisting)
+            if (bFaceExisting)
             {
-                return new ResponseMessage(false, "There's already the same face existing!");
+                return makeRedirectResponse(new ResponseMessage(false, "There's already the same face existing!"), strReturnUrl, strFrom);
             }
 
             //signing up
-            String userName = HttpContext.Current.Request.Params["UserName"];
-            String userAddress = HttpContext.Current.Request.Params["UserAddress"];
+            String strFirstName = HttpContext.Current.Request.Params["FirstName"];
+            String userEmail = HttpContext.Current.Request.Params["UserEmail"];
             String strFeatureData = string.Join(",", pFeature);
 
             byte[] bufferUserBlob = null;
             if (HttpContext.Current.Request.Files.AllKeys.Any())
             {
-                for(int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
+                for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
                 {
                     long length = HttpContext.Current.Request.Files[i].InputStream.Length;
                     bufferUserBlob = new byte[length];
@@ -240,11 +245,11 @@ namespace FaceRecog
                 }
             }
 
-            string strQuery = "INSERT INTO UserData (UserName, UserAddress, UserPhoto, UserVideo, FeatureData) ";
-            strQuery += "VALUES (@UserName, @UserAddress, @UserPhoto, @UserVideo, @FeatureData)";
+            string strQuery = "INSERT INTO UserData (UserName, UserEmail, UserPhoto, UserVideo, FeatureData) ";
+            strQuery += "VALUES (@UserName, @UserEmail, @UserPhoto, @UserVideo, @FeatureData)";
             SqlCommand cmd = new SqlCommand(strQuery);
-            cmd.Parameters.Add("@UserName", SqlDbType.NChar).Value = userName;
-            cmd.Parameters.Add("@UserAddress", SqlDbType.NChar).Value = userAddress;
+            cmd.Parameters.Add("@UserName", SqlDbType.NChar).Value = strFirstName;
+            cmd.Parameters.Add("@UserEmail", SqlDbType.NVarChar).Value = userEmail;
             cmd.Parameters.Add("@UserPhoto", SqlDbType.Image).Value = bmpMainPhoto.GetBuffer();
             cmd.Parameters.Add("@UserVideo", SqlDbType.Image).Value = bufferUserBlob;
             cmd.Parameters.Add("@FeatureData", SqlDbType.Text).Value = strFeatureData;
@@ -259,7 +264,16 @@ namespace FaceRecog
             }
             catch (Exception ex)
             {
-                return new ResponseMessage(false, "DB error occured while creating an instance!");
+                var strMsg = ex.Message;
+
+                // Check whether it is a email 
+                if (ex is SqlException) {
+                    SqlException exSql = (SqlException)ex;
+                    if (exSql.Class == 14 && exSql.Number == 2627) {
+                        strMsg = "Email has already taken";
+                    }
+                }
+                return makeRedirectResponse(new ResponseMessage(false, strMsg), strReturnUrl, strFrom);
             }
             finally
             {
@@ -267,7 +281,8 @@ namespace FaceRecog
                 sqlDbConnection.Dispose();
             }
 
-            return new ResponseMessage(true, "OK");
+            // Succeeded
+            return makeShopifyLoginResponse(userEmail, strReturnUrl, strFrom);
         }
     }
 }

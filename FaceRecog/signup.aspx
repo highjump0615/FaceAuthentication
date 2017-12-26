@@ -32,28 +32,30 @@
 			<div class="row" id="changeable">
     			<video id="webcamShow" style="width:100%; height:80%;" autoplay></video>
             </div>
+
+            <!-- First Name -->
 			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Name : </label>
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">First Name : </label>
+				<div class="col-sm-7" style="margin-bottom:5px;">
+					<div class="input-inline input-medium">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-user"></span>
+							</span>
+							<input type="text" id="firstname" class="form-control" placeholder="First Name" />
+						</div>
+					</div>
+				</div>
+			</div>
+            <div class="form-group">
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Email : </label>
 				<div class="col-sm-7" style="margin-bottom:5px;">
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
 								<span class="glyphicon glyphicon-envelope"></span>
 							</span>
-							<input type="text" id="username" class="form-control" placeholder="username" />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Address : </label>
-				<div class="col-sm-7" style="margin-bottom:10px;">
-					<div class="input-inline input-medium">
-						<div class="input-group">
-							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-envelope"></span>
-							</span>
-							<input type="text" id="useraddress" class="form-control" placeholder="useraddress" />
+							<input type="text" id="useremail" class="form-control" placeholder="Email Address" />
 						</div>
 					</div>
 				</div>
@@ -62,7 +64,7 @@
                 <h4 id="notify_permission"></h4>
             </div>
             <div style="text-align:center;">
-                <input id="btn-signup" class="btn green" style="width: 150px; height:40px;font-size:20px;" value="SignUp" />
+                <button id="btn-signup" class="btn green" style="width: 150px; height:40px;font-size:20px;">SignUp</button>
             </div>
             <div id="my_camera" style="visibility: hidden; position:absolute; bottom:0; right:0"></div>
 		</div>
@@ -83,6 +85,11 @@
 </body>
 </html>
 <script>
+
+  // get parameters from url
+  var gstrReturn = '<%= Request.QueryString["returnUrl"] %>';
+  var gstrFrom = '<%= Request.QueryString["from"] %>';
+
     document.getElementById("btn-signup").disabled = true;
     document.getElementById("notify_permission").style = "color:white";
     document.getElementById("notify_permission").innerHTML = "Please share your camera device!";
@@ -249,6 +256,7 @@
 
         function sendUserData(blob) {
             var httpRequest = new XMLHttpRequest();
+
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.readyState === 4) {
                     var response = JSON.parse(httpRequest.responseText);
@@ -262,20 +270,28 @@
                         document.getElementById("btn-signup").disabled = false;
                         document.getElementById("notify_permission").innerHTML = "";
                         alert('Congratulations for signing up to our community!\n');
-                        window.location.replace("default.aspx");
+
+                        // Go to main page or shopify
+                        window.location.replace(response.redirectUrl);
                     }
                 }
             };
+
             httpRequest.open("POST", "api/signup");
             var fd = new FormData();
-            fd.append("UserName", $("#username").val());
-            fd.append("UserAddress", $("#useraddress").val());
+            fd.append("FirstName", $("#firstname").val());
+            fd.append("UserEmail", $("#useremail").val());
             fd.append("MainPhoto", userMainPhoto.src);
             fd.append("SubsidiaryPhoto1", userSubPhotos[0]);
             fd.append("SubsidiaryPhoto2", userSubPhotos[1]);
             fd.append("SubsidiaryPhoto3", userSubPhotos[2]);
             fd.append("SubsidiaryPhoto4", userSubPhotos[3]);
             fd.append("UserVideo", blob);
+
+            // shopify related param
+            fd.append("ReturnUrl", gstrReturn);
+            fd.append("From", gstrFrom);
+
             httpRequest.send(fd);
         }
 
@@ -313,7 +329,7 @@
         }
 
         function takeSignupInfo() {
-            if ($("#username").val() == '' || $("#useraddress").val() == '')
+            if ($("#firstname").val() == '' || $("#useremail").val() == '')
             {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease make sure that you've filled out required forms for enrollment.";
@@ -366,6 +382,8 @@
 
             document.getElementById("notify_permission").style = "color:white";
             document.getElementById("notify_permission").innerHTML = "Please confirm if you're okay with creating instances of your camera device to take a video!";
+
+            var bUploaded = false;
  
             //turn on photo capture
             Webcam.set({
@@ -379,6 +397,10 @@
                 mediaRecorder = new MediaStreamRecorder(localstream);
                 mediaRecorder.mimeType = 'video/webm';
                 mediaRecorder.ondataavailable = function (blob) {
+                  if (bUploaded) {
+                    return;
+                  }
+
                     //turn off photo capture
                     Webcam.off('load', function () { });
                     Webcam.reset();
@@ -387,13 +409,19 @@
                     sendUserData(blob);
                     document.getElementById("notify_permission").style = "color:white";
                     document.getElementById("notify_permission").innerHTML = "Checking user's photo...";
+
+                    bUploaded = true;
                 };
                 document.getElementById("notify_permission").style = "color:white";
                 document.getElementById("notify_permission").innerHTML = "Recording a video now ...";
-                setTimeout(function () { mediaRecorder.start(2000); }, (Object)(1000));
-                setTimeout(function () { mediaRecorder.stop(); }, (Object)(3000));
+                setTimeout(function () {
+                    mediaRecorder.start(2000);
+                }, 1000);
+                setTimeout(function () {
+                    mediaRecorder.stop();
+                }, 3000);
 
-                //
+                ////
                 takePhotoArray();
             });
             Webcam.attach('#my_camera');

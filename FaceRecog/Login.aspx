@@ -18,7 +18,7 @@
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/layout.css" rel="stylesheet" />
+    <link href="assets/css/layout.css?171219" rel="stylesheet" />
     <link href="assets/css/style.css" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -29,18 +29,18 @@
 <body>
     <div class="wrap">
 		<div class="container" style="background:#555;padding:0;">
-			<div class="row" id="changeable">
+			<div class="row mb-15" id="changeable">
     			<video id="webcam" style="width:100%; height:80%;" autoplay="autoplay"></video>
             </div>
 			<div class="form-group">
-				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">Name : </label>
+				<label class="col-sm-5 control-label" style="font-size:18px;margin-bottom:10px;color:#ffffff;">First Name : </label>
 				<div class="col-sm-7" style="margin-bottom:5px;">
 					<div class="input-inline input-medium">
 						<div class="input-group">
 							<span class="input-group-addon">
-								<span class="glyphicon glyphicon-envelope"></span>
+								<span class="glyphicon glyphicon-user"></span>
 							</span>
-							<input type="text" id="username" class="form-control" placeholder="username" />
+							<input type="text" id="firstname" class="form-control" placeholder="First Name" />
 						</div>
 					</div>
 				</div>
@@ -49,7 +49,11 @@
                 <h4 id="notify_permission"></h4>
             </div>
             <div style="text-align:center;">
-                <input id="btn-login" class="btn red" style="width: 150px; height:40px;font-size:20px;" value="Login" />
+                <button id="btn-login" class="btn red mt-15" style="width: 150px; height:40px;font-size:20px;">Login</button>
+            </div>
+
+            <div class="text-center mt-15 notice-link"
+              >Not having an account?<a href="signup.aspx<%= Request.Url.Query %>">&nbsp;&nbsp;Sign up</a> here
             </div>
 		</div>
 	</div>
@@ -66,6 +70,11 @@
 </body>
 </html>
 <script>
+
+    // get parameters from url
+    var gstrReturn = '<%= Request.QueryString["returnUrl"] %>';
+    var gstrFrom = '<%= Request.QueryString["from"] %>';
+
     document.getElementById("btn-login").disabled = true;
     document.getElementById("notify_permission").style = "color:white";
     document.getElementById("notify_permission").innerHTML = "Please share your camera device!";
@@ -171,18 +180,22 @@
         }
 
         function handleResponse(data) {
+            // Fail
             if (!data.success) {
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
                 alert('Login failed!\n' + data.message);
-                window.location.replace("default.aspx");
+
+                // Resumes camera
+                video.play();
             }
+            // Success
             else {
                 document.getElementById("btn-login").disabled = false;
                 document.getElementById("notify_permission").innerHTML = "";
-                alert('Welcome to visiting our site again!\n Hope you will enjoy your journey.');
-                window.location.replace("MainSite.aspx");
-            }
+                alert('Welcome to visiting our site again!\n Hope you will enjoy your journey.');                
+                window.location.replace(data.redirectUrl);
+            }            
         }
 
         function handleError(jqXHR, status, error) {
@@ -190,7 +203,8 @@
         }
 
         function takeSnapshot() {
-            if ($("#username").val() == '') {
+            
+            if ($("#firstname").val() == '') {
                 document.getElementById("notify_permission").style = "color:blue";
                 document.getElementById("notify_permission").innerHTML = "Warning!\nPlease enter your name.";
                 return;
@@ -241,11 +255,16 @@
             document.getElementById("notify_permission").innerHTML = "We're verifying you now. Please wait for a while...";
             userPhoto.src = canvas.toDataURL('image/png');
             video.pause();
-
+            
             $.ajax({
                 url: 'api/login',
                 type: 'POST',
-                data: { UserPhoto: userPhoto.src, UserName: $("#username").val() },
+                data: {
+                    UserPhoto: userPhoto.src,
+                    UserName: $("#firstname").val(),
+                    ReturnUrl: gstrReturn,
+                    From: gstrFrom
+                },
                 dataType: 'json',
                 async: false,
                 success: handleResponse,

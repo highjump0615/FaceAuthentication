@@ -14,3 +14,20 @@ body {
 	max-width: 500px;
 	position:relative;
 }
+
+/* Common style */
+.mb-15 {
+  margin-bottom: 15px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.notice-link {
+  font-size: 12pt;
+  color: #eee;
+}
+.notice-link a {
+  color: aqua;
+}

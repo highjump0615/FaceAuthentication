@@ -13,10 +13,15 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.Collections.Specialized;
+using ShopifyMultipassTokenGenerator.Models;
+using System.Configuration;
+using Newtonsoft.Json;
+using ShopifyMultipassTokenGenerator;
+using FaceRecog.Controller;
 
 namespace FaceRecog
 {
-    public class LoginController : ApiController
+    public class LoginController : BaseController
     {
         public static string RemoveEXIFRotation(string URI)
         {
@@ -89,6 +94,7 @@ namespace FaceRecog
                 }
             }
         }
+
         [HttpPost]
         public ResponseMessage Post()
         {
@@ -105,6 +111,8 @@ namespace FaceRecog
 
             //name verification
             String userName = HttpContext.Current.Request.Params["UserName"];
+            string strReturnUrl = HttpContext.Current.Request.Params["ReturnUrl"];
+            string strFrom = HttpContext.Current.Request.Params["From"];
 
             string sqlQuery = "SELECT COUNT(*) FROM UserData WHERE UserName = '" + userName + "'";
             SqlConnection dbConn = new SqlConnection(GlobalVar.sqlDatabaseAccessString);
@@ -117,12 +125,12 @@ namespace FaceRecog
                 Int32 count = Convert.ToInt32(sqlCmd.ExecuteScalar());
                 if(count == 0)
                 {
-                    return new ResponseMessage(false, "There's no user having this username!");
+                    return makeRedirectResponse(new ResponseMessage(false, "There's no user having this name!"), strReturnUrl, strFrom);
                 }
             }
             catch (Exception)
             {
-                return new ResponseMessage(false, "DB error occured while verification is being held!");
+                return makeRedirectResponse(new ResponseMessage(false, "DB error occured while verification is being held!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -144,7 +152,7 @@ namespace FaceRecog
 
             if (bmp.GetWidth() == 0)
             {
-                return new ResponseMessage(false, "Invalid Photo Error!");
+                return makeRedirectResponse(new ResponseMessage(false, "Invalid Photo Error!"), strReturnUrl, strFrom);
             }
 
             // detect face
@@ -152,12 +160,12 @@ namespace FaceRecog
             if (nFaceCount <= 0)
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Face Detection Error! Could not find any face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Face Detection Error! Could not find any face."), strReturnUrl, strFrom);
             }
             else if (nFaceCount > 1)
             {
                 FaceEngine.RemoveAllTemplate();
-                return new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face.");
+                return makeRedirectResponse(new ResponseMessage(false, "Too many faces! Please make sure that there's only 1 face."), strReturnUrl, strFrom);
             }
 
             //get face region
@@ -177,8 +185,11 @@ namespace FaceRecog
             //comparing with enrolled faces
             sqlCmd.Dispose();
             dbConn.Dispose();
+
             bool bFaceVerified = false;
-            sqlQuery = "SELECT FeatureData FROM UserData WHERE UserName = '" + userName + "'";
+            string strUserEmail = "";
+
+            sqlQuery = "SELECT UserEmail, FeatureData FROM UserData WHERE UserName = '" + userName + "'";
             dbConn = new SqlConnection(GlobalVar.sqlDatabaseAccessString);
             sqlCmd = new SqlCommand(sqlQuery, dbConn);
             try
@@ -188,7 +199,9 @@ namespace FaceRecog
 
                 while (dbRead.Read())
                 {
-                    string strJointEnrolledFeatureData = dbRead.GetString(0);
+                    strUserEmail = dbRead.GetString(0);
+                    string strJointEnrolledFeatureData = dbRead.GetString(1);
+
                     string[] strEnrolledFeatureDatas = strJointEnrolledFeatureData.Split('|');
 
                     float maxSimilarity = 0.0f;
@@ -210,7 +223,7 @@ namespace FaceRecog
             }
             catch (Exception)
             {
-                return new ResponseMessage(false, "Error occured while verification is being held!");
+                return makeRedirectResponse(new ResponseMessage(false, "Error occured while verification is being held!"), strReturnUrl, strFrom);
             }
             finally
             {
@@ -219,10 +232,11 @@ namespace FaceRecog
 
             if (!bFaceVerified)
             {
-                return new ResponseMessage(false, "Sorry, your face doesn't match with enrolled one!");
+                return makeRedirectResponse(new ResponseMessage(false, "Sorry, your face doesn't match with enrolled one!"), strReturnUrl, strFrom);
             }
-            
-            return new ResponseMessage(true, "OK");
+
+            // Succeeded
+            return makeShopifyLoginResponse(strUserEmail, strReturnUrl, strFrom);
         }
     }
 }

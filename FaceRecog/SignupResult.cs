@@ -9,6 +9,9 @@ namespace FaceRecog
     {
         public bool success { get; set; }
         public string message { get; set; }
+
+        public string redirectUrl { get; set; }
+
         public ResponseMessage(bool su, string msg)
         {
             success = su;
